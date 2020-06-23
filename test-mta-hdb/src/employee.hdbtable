@@ -1,0 +1,6 @@
+COLUMN TABLE "test_mta_hdb::Employee" 
+(
+   "ID" INTEGER, 
+   "NAME" VARCHAR(200),
+   PRIMARY KEY ("ID") 
+)

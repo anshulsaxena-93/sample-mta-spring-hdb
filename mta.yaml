@@ -1,0 +1,50 @@
+ID: test-mta-app
+_schema-version: '2.1'
+version: 0.0.1
+modules:
+  - name: test-mta-hdb
+    type: hdb
+    path: test-mta-hdb
+    requires:
+      - name: test-hdi-container
+      
+  - name: test-mta-js
+    type: nodejs
+    path: test-mta-js
+    provides:
+      - name: test-mta-js_api
+        properties:
+          url: '${default-url}'
+    requires:
+      - name: test-hdi-container
+    parameters:
+      memory: 128M
+  
+  
+  - name: test_spring_boot_app
+    type: java
+    path: test_spring_boot_app
+    parameters:
+      memory: 1024M
+    provides:
+      - name: test_spring_boot_app_api
+        properties:
+          url: '${default-url}'
+    requires:
+      - name: test-hdi-container
+        properties:
+          JBP_CONFIG_RESOURCE_CONFIGURATION: '[tomcat/webapps/ROOT/META-INF/context.xml: {"service_name_for_DefaultDB" : "~{hdi-container-name}"}]'
+    build-parameters:
+      build-result: 'target/*.jar'
+
+  
+
+resources:
+  - name: test-hdi-container
+    parameters:
+      config:
+        schema: test_hdi_schema
+        database_id: 6588d6b3-4332-491c-aa06-1d1558a6e62a
+    properties:
+      hdi-container-name: '${service-name}'
+    type: com.sap.xs.hdi-container
